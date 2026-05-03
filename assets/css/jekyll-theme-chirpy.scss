@@ -1,7 +1,11 @@
 ---
 ---
 
-@use 'main';
+@use 'main
+{%- if jekyll.environment == 'production' -%}
+  .bundle
+{%- endif -%}
+';
 
 /* =========================================================================
    melix.cl — aesthetic overlay v3
