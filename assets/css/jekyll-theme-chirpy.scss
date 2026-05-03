@@ -1,6 +1,21 @@
 ---
 ---
 
+/* Do NOT simplify this `@use` to `@use 'main';`.
+ *
+ * Chirpy ships two Sass entrypoints:
+ *   _sass/main.scss          — Bootstrap NOT bundled (loaded via CDN at runtime)
+ *   _sass/main.bundle.scss   — Bootstrap inlined into the compiled CSS
+ *
+ * Chirpy's head.html only emits the Bootstrap CDN <link> when
+ * jekyll.environment != 'production'. So:
+ *   - dev (jekyll serve)    : @use 'main'        + CDN <link> from head.html
+ *   - prod (Pages, Actions) : @use 'main.bundle' + (no CDN link, Bootstrap is in our css)
+ *
+ * Using 'main' unconditionally means production ships with NO Bootstrap at
+ * all — the grid collapses, the layout looks "no styling / squished", the
+ * right panel disappears, and localhost works while the deploy doesn't.
+ */
 @use 'main
 {%- if jekyll.environment == 'production' -%}
   .bundle
