@@ -52,7 +52,7 @@ layout: default
     function wrapAll() {
       var content = document.querySelector('article.px-1 .content');
       if (!content) return;
-      /* h2 first so h3s end up nested inside their parent's body */
+      
       wrapSectionsAtLevel(2, content);
       wrapSectionsAtLevel(3, content);
     }

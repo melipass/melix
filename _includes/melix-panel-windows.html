@@ -101,9 +101,7 @@
       win.appendChild(titlebar);
       win.appendChild(body);
 
-      /* Insert wrapper, then move section in. Hide the section's own */
-      /* heading because the title bar carries the same text now. */
-      section.parentNode.insertBefore(win, section);
+section.parentNode.insertBefore(win, section);
       heading.style.display = 'none';
       body.appendChild(section);
 
@@ -130,7 +128,7 @@
     } else {
       wrapAllPanels();
     }
-    /* The TOC section can populate late (Tocbot runs after load). */
+    
     window.addEventListener('load', wrapAllPanels);
   })();
 </script>
