@@ -186,7 +186,7 @@ script_includes:
 </article>
 
 <script>
-  // Wire the post-page article title bar buttons. — and × both go home.
+  /* Wire the post-page article title bar buttons. — and × both go home. */
   (function () {
     var goHome = function (e) {
       e.preventDefault();
@@ -223,7 +223,7 @@ script_includes:
       return b;
     }
 
-    // Smooth toggle via View Transitions API where supported, instant fallback.
+    /* Smooth toggle via View Transitions API where supported, instant fallback. */
     function withTransition(fn) {
       if (document.startViewTransition) {
         document.startViewTransition(fn);
@@ -232,9 +232,9 @@ script_includes:
       }
     }
 
-    // Track how many windows are currently maximized so the body scroll
-    // lock toggles correctly even if multiple images get maximized in
-    // sequence.
+    /* Track how many windows are currently maximized so the body scroll */
+    /* lock toggles correctly even if multiple images get maximized in */
+    /* sequence. */
     function syncBodyScrollLock() {
       var any = document.querySelector('.image-window.maximized');
       document.body.classList.toggle('image-maximized', !!any);
@@ -249,7 +249,7 @@ script_includes:
       });
     }
 
-    // The × button. Never removes the image — only resets size and drag.
+    /* The × button. Never removes the image — only resets size and drag. */
     function restoreDefaults(wrapper) {
       withTransition(function () {
         wrapper.classList.remove('maximized');
@@ -263,8 +263,8 @@ script_includes:
       });
     }
 
-    // Read the current translate() from the wrapper, accounting for the CSS
-    // rule that offsets desktop windows by 40px.
+    /* Read the current translate() from the wrapper, accounting for the CSS */
+    /* rule that offsets desktop windows by 40px. */
     function readTranslate(el) {
       var t = getComputedStyle(el).transform;
       if (!t || t === 'none') return { x: 0, y: 0 };
@@ -274,7 +274,7 @@ script_includes:
       return { x: parts[4] || 0, y: parts[5] || 0 };
     }
 
-    // Drag the window by its title bar.
+    /* Drag the window by its title bar. */
     function makeDraggable(wrapper, titlebar) {
       function start(clientX, clientY) {
         if (wrapper.classList.contains('maximized')) return null;
@@ -336,9 +336,9 @@ script_includes:
       );
     }
 
-    // Strip Chirpy's auto-popup link and lightbox hooks so our maximize
-    // wins. Run once at wrap time and again on any future DOM mutation
-    // (Chirpy may run its image processing after we do).
+    /* Strip Chirpy's auto-popup link and lightbox hooks so our maximize */
+    /* wins. Run once at wrap time and again on any future DOM mutation */
+    /* (Chirpy may run its image processing after we do). */
     function neutralizeLightbox(img) {
       img.classList.add('no-popup');
       img.removeAttribute('data-glightbox');
@@ -403,8 +403,8 @@ script_includes:
 
       makeDraggable(wrapper, titlebar);
 
-      // Watch this window for any <a> Chirpy might inject around the image
-      // after we wrap, and strip it.
+      /* Watch this window for any <a> Chirpy might inject around the image */
+      /* after we wrap, and strip it. */
       var observer = new MutationObserver(function () {
         unwrapImageLinks(wrapper);
         wrapper.querySelectorAll('img').forEach(neutralizeLightbox);
@@ -414,8 +414,8 @@ script_includes:
       return { wrapper: wrapper, body: body };
     }
 
-    // Group consecutive image-windows under .content into a single
-    // flex row so adjacent screenshots sit side by side.
+    /* Group consecutive image-windows under .content into a single */
+    /* flex row so adjacent screenshots sit side by side. */
     function pairAdjacentImageWindows() {
       var content = document.querySelector('article.px-1 .content');
       if (!content) return;
@@ -455,7 +455,7 @@ script_includes:
     }
 
     function wrapImagesAsWindows() {
-      // Pre-clean: any existing windows shouldn't carry stale lightbox links.
+      /* Pre-clean: any existing windows shouldn't carry stale lightbox links. */
       document
         .querySelectorAll('article.px-1 .image-window')
         .forEach(function (w) {
@@ -468,7 +468,7 @@ script_includes:
         if (!img.src) return;
         if (img.closest('.image-window')) return;
 
-        // Strip any <a> Chirpy already wrapped around this image.
+        /* Strip any <a> Chirpy already wrapped around this image. */
         if (img.parentElement && img.parentElement.tagName === 'A') {
           var a = img.parentElement;
           a.parentNode.insertBefore(img, a);
@@ -513,8 +513,8 @@ script_includes:
           win.body.appendChild(target);
         }
 
-        // Click the image to toggle maximize. Capture phase + stopPropagation
-        // so Chirpy's lightbox listeners (if any) never fire.
+        /* Click the image to toggle maximize. Capture phase + stopPropagation */
+        /* so Chirpy's lightbox listeners (if any) never fire. */
         var imgEl = win.body.querySelector('img');
         if (imgEl) {
           imgEl.addEventListener(
@@ -540,8 +540,8 @@ script_includes:
     } else {
       init();
     }
-    // Run again after all assets and theme scripts have settled, in case
-    // Chirpy's lightbox setup ran after DOMContentLoaded.
+    /* Run again after all assets and theme scripts have settled, in case */
+    /* Chirpy's lightbox setup ran after DOMContentLoaded. */
     window.addEventListener('load', function () {
       wrapImagesAsWindows();
       pairAdjacentImageWindows();

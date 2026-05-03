@@ -164,7 +164,7 @@ layout: default
       var maxBtn = card.querySelector('.cw-max');
       var closeBtn = card.querySelector('.cw-close');
 
-      // — minimize: collapse to title bar
+      /* — minimize: collapse to title bar */
       if (minBtn) {
         minBtn.addEventListener('click', function (e) {
           e.preventDefault();
@@ -173,7 +173,7 @@ layout: default
         });
       }
 
-      // □ maximize: navigate to the post
+      /* □ maximize: navigate to the post */
       if (maxBtn) {
         maxBtn.addEventListener('click', function (e) {
           e.preventDefault();
@@ -183,8 +183,8 @@ layout: default
         });
       }
 
-      // × close: deliberately no-op on the homepage, but stop the click so
-      // it doesn't bubble to the wrapping <a> and navigate.
+      /* × close: deliberately no-op on the homepage, but stop the click so */
+      /* it doesn't bubble to the wrapping <a> and navigate. */
       if (closeBtn) {
         closeBtn.addEventListener('click', function (e) {
           e.preventDefault();
@@ -192,9 +192,9 @@ layout: default
         });
       }
 
-      // Hover: play the (already-preloaded) video. Always muted. No layout
-      // jump because the video is positioned absolutely and matches the
-      // image's bounding box (see CSS).
+      /* Hover: play the (already-preloaded) video. Always muted. No layout */
+      /* jump because the video is positioned absolutely and matches the */
+      /* image's bounding box (see CSS). */
       var video = card.querySelector('video[data-src]');
       if (video) {
         var ensureMuted = function () {
@@ -205,7 +205,7 @@ layout: default
 
         card.addEventListener('mouseenter', function () {
           if (card.classList.contains('card-minimized')) return;
-          // Fallback: if the post-load preload hasn't run yet, kick it.
+          /* Fallback: if the post-load preload hasn't run yet, kick it. */
           if (!video.src && video.dataset.src) {
             video.src = video.dataset.src;
           }
@@ -219,14 +219,14 @@ layout: default
           video.pause();
           video.classList.remove('cw-loaded');
         });
-        // Belt-and-braces: re-mute on any volume change.
+        /* Belt-and-braces: re-mute on any volume change. */
         video.addEventListener('volumechange', ensureMuted);
       }
     });
 
-    // Preload card hover videos AFTER the main page has finished loading.
-    // We don't block initial render or steal bandwidth from the critical path,
-    // but by the time the visitor hovers a card, the bytes are usually there.
+    /* Preload card hover videos AFTER the main page has finished loading. */
+    /* We don't block initial render or steal bandwidth from the critical path, */
+    /* but by the time the visitor hovers a card, the bytes are usually there. */
     function preloadCardVideos() {
       document
         .querySelectorAll('article.card-wrapper video[data-src]')
@@ -241,7 +241,7 @@ layout: default
         });
     }
     if (document.readyState === 'complete') {
-      // window.load already fired
+      /* window.load already fired */
       setTimeout(preloadCardVideos, 200);
     } else {
       window.addEventListener('load', function () {
