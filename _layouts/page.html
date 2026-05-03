@@ -1,0 +1,68 @@
+---
+layout: default
+---
+
+{% include lang.html %}
+
+<article class="px-1" data-filename="{{ page.slug }}.md">
+  {% if page.layout == 'page' or page.collection == 'tabs' %}
+    {% assign tab_key = page.title | downcase %}
+    {% assign title = site.data.locales[lang].tabs[tab_key] | default: page.title %}
+    <h1 class="dynamic-title">
+      {{ title }}
+    </h1>
+    <div class="content">
+      {{ content }}
+    </div>
+  {% else %}
+    {{ content }}
+  {% endif %}
+</article>
+
+<script>
+  (function () {
+    function wrapSectionsAtLevel(level, root) {
+      var stopTags = [];
+      for (var i = 1; i <= level; i++) stopTags.push('H' + i);
+      var headings = Array.from(root.querySelectorAll('H' + level));
+      headings.forEach(function (h) {
+        if (h.dataset.swWrapped) return;
+        var siblings = [];
+        var next = h.nextElementSibling;
+        while (next) {
+          if (stopTags.indexOf(next.tagName) >= 0) break;
+          siblings.push(next);
+          next = next.nextElementSibling;
+        }
+        var win = document.createElement('div');
+        win.className = 'section-window section-window-h' + level;
+        var body = document.createElement('div');
+        body.className = 'sw-body';
+        h.classList.add('sw-titlebar');
+        h.dataset.swWrapped = '1';
+        h.parentNode.insertBefore(win, h);
+        win.appendChild(h);
+        siblings.forEach(function (s) {
+          body.appendChild(s);
+        });
+        win.appendChild(body);
+      });
+    }
+
+    function wrapAll() {
+      var content = document.querySelector('article.px-1 .content');
+      if (!content) return;
+      // h2 first so h3s end up nested inside their parent's body
+      wrapSectionsAtLevel(2, content);
+      wrapSectionsAtLevel(3, content);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', wrapAll);
+    } else {
+      wrapAll();
+    }
+  })();
+</script>
+
+{% include melix-panel-windows.html %}

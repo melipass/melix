@@ -1,0 +1,552 @@
+---
+layout: default
+panel_includes:
+  - toc
+tail_includes:
+  - related-posts
+  - post-nav
+script_includes:
+  - comment
+---
+
+{% include lang.html %}
+
+{% include toc-status.html %}
+
+<article class="px-1" data-toc="{{ enable_toc }}" data-filename="{{ page.slug }}.md">
+  <div class="card-titlebar">
+    <span class="card-filename">{{ page.slug }}.md</span>
+    <div class="card-controls">
+      <button type="button" class="cw-min" aria-label="Back to home" title="Back to home">—</button>
+      <button type="button" class="cw-max" aria-label="" title="" tabindex="-1">□</button>
+      <button type="button" class="cw-close" aria-label="Back to home" title="Back to home">×</button>
+    </div>
+  </div>
+  <header>
+    <h1 data-toc-skip>{{ page.title }}</h1>
+    {% if page.description %}
+      <p class="post-desc fw-light mb-4">{{ page.description }}</p>
+    {% endif %}
+
+    <div class="post-meta text-muted">
+      <!-- published date -->
+      <span>
+        {{ site.data.locales[lang].post.posted }}
+        {% include datetime.html date=page.date tooltip=true lang=lang %}
+      </span>
+
+      <!-- lastmod date -->
+      {% if page.last_modified_at and page.last_modified_at != page.date %}
+        <span>
+          {{ site.data.locales[lang].post.updated }}
+          {% include datetime.html date=page.last_modified_at tooltip=true lang=lang %}
+        </span>
+      {% endif %}
+
+      {% if page.image %}
+        {% capture src %}src="{{ page.image.path | default: page.image }}"{% endcapture %}
+        {% capture class %}class="preview-img{% if page.image.no_bg %}{{ ' no-bg' }}{% endif %}"{% endcapture %}
+        {% capture alt %}alt="{{ page.image.alt | xml_escape | default: "Preview Image" }}"{% endcapture %}
+
+        {% if page.image.lqip %}
+          {%- capture lqip -%}lqip="{{ page.image.lqip }}"{%- endcapture -%}
+        {% endif %}
+
+        <div class="mt-3 mb-3">
+          <img {{ src }} {{ class }} {{ alt }} w="1200" h="630" {{ lqip }}>
+          {%- if page.image.alt -%}
+            <figcaption class="text-center pt-2 pb-2">{{ page.image.alt }}</figcaption>
+          {%- endif -%}
+        </div>
+      {% endif %}
+
+      <div class="d-flex justify-content-between">
+        <!-- author(s) -->
+        <span>
+          {% if page.author %}
+            {% assign authors = page.author %}
+          {% elsif page.authors %}
+            {% assign authors = page.authors %}
+          {% endif %}
+
+          {{ site.data.locales[lang].post.written_by }}
+
+          <em>
+            {% if authors %}
+              {% for author in authors %}
+                {% if site.data.authors[author].url -%}
+                  <a href="{{ site.data.authors[author].url }}">{{ site.data.authors[author].name }}</a>
+                {%- else -%}
+                  {{ site.data.authors[author].name }}
+                {%- endif %}
+                {% unless forloop.last %}{{ '</em>, <em>' }}{% endunless %}
+              {% endfor %}
+            {% else %}
+              <a href="{{ site.social.links[0] }}">{{ site.social.name }}</a>
+            {% endif %}
+          </em>
+        </span>
+
+        <div>
+          <!-- pageviews -->
+          {% if site.pageviews.provider and site.analytics[site.pageviews.provider].id %}
+            <span>
+              <em id="pageviews">
+                <i class="fas fa-spinner fa-spin small"></i>
+              </em>
+              {{ site.data.locales[lang].post.pageview_measure }}
+            </span>
+          {% endif %}
+
+          <!-- read time -->
+          {% include read-time.html content=content prompt=true lang=lang %}
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {% if enable_toc %}
+    <div id="toc-bar" class="d-flex align-items-center justify-content-between invisible">
+      <span class="label text-truncate">{{ page.title }}</span>
+      <button type="button" class="toc-trigger btn me-1">
+        <i class="fa-solid fa-list-ul fa-fw"></i>
+      </button>
+    </div>
+
+    <button id="toc-solo-trigger" type="button" class="toc-trigger btn btn-outline-secondary btn-sm">
+      <span class="label ps-2 pe-1">{{- site.data.locales[lang].panel.toc -}}</span>
+      <i class="fa-solid fa-angle-right fa-fw"></i>
+    </button>
+
+    <dialog id="toc-popup" class="p-0">
+      <div class="header d-flex flex-row align-items-center justify-content-between">
+        <div class="label text-truncate py-2 ms-4">{{- page.title -}}</div>
+        <button id="toc-popup-close" type="button" class="btn mx-1 my-1 opacity-75">
+          <i class="fas fa-close"></i>
+        </button>
+      </div>
+      <div id="toc-popup-content" class="px-4 py-3 pb-4"></div>
+    </dialog>
+  {% endif %}
+
+  <div class="content">
+    {{ content }}
+  </div>
+
+  <div class="post-tail-wrapper text-muted">
+    <!-- categories -->
+    {% if page.categories.size > 0 %}
+      <div class="post-meta mb-3">
+        <i class="far fa-folder-open fa-fw me-1"></i>
+        {% for category in page.categories %}
+          <a href="{{ site.baseurl }}/categories/{{ category | slugify | url_encode }}/">{{ category }}</a>
+          {%- unless forloop.last -%},{%- endunless -%}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- tags -->
+    {% if page.tags.size > 0 %}
+      <div class="post-tags">
+        <i class="fa fa-tags fa-fw me-1"></i>
+        {% for tag in page.tags %}
+          <a
+            href="{{ site.baseurl }}/tags/{{ tag | slugify | url_encode }}/"
+            class="post-tag no-text-decoration"
+          >
+            {{- tag -}}
+          </a>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div
+      class="
+        post-tail-bottom
+        d-flex justify-content-between align-items-center mt-5 pb-2
+      "
+    >
+      <div class="license-wrapper">
+        {% if site.data.locales[lang].copyright.license.template %}
+          {% capture _replacement %}
+        <a href="{{ site.data.locales[lang].copyright.license.link }}">
+          {{ site.data.locales[lang].copyright.license.name }}
+        </a>
+        {% endcapture %}
+
+          {{ site.data.locales[lang].copyright.license.template | replace: ':LICENSE_NAME', _replacement }}
+        {% endif %}
+      </div>
+
+      {% include post-sharing.html lang=lang %}
+    </div>
+    <!-- .post-tail-bottom -->
+  </div>
+  <!-- div.post-tail-wrapper -->
+</article>
+
+<script>
+  // Wire the post-page article title bar buttons. — and × both go home.
+  (function () {
+    var goHome = function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      window.location.href = '{{ "/" | relative_url }}';
+    };
+    document
+      .querySelectorAll('article.px-1 > .card-titlebar .cw-min, article.px-1 > .card-titlebar .cw-close')
+      .forEach(function (btn) {
+        btn.addEventListener('click', goHome);
+      });
+    document
+      .querySelectorAll('article.px-1 > .card-titlebar .cw-max')
+      .forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+        });
+      });
+  })();
+</script>
+
+<script>
+  (function () {
+    var iwCounter = 0;
+
+    function makeButton(cls, label, glyph) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = cls;
+      b.setAttribute('aria-label', label);
+      b.title = label;
+      b.textContent = glyph;
+      return b;
+    }
+
+    // Smooth toggle via View Transitions API where supported, instant fallback.
+    function withTransition(fn) {
+      if (document.startViewTransition) {
+        document.startViewTransition(fn);
+      } else {
+        fn();
+      }
+    }
+
+    // Track how many windows are currently maximized so the body scroll
+    // lock toggles correctly even if multiple images get maximized in
+    // sequence.
+    function syncBodyScrollLock() {
+      var any = document.querySelector('.image-window.maximized');
+      document.body.classList.toggle('image-maximized', !!any);
+    }
+
+    function toggleMaximize(wrapper) {
+      withTransition(function () {
+        var willMaximize = !wrapper.classList.contains('maximized');
+        wrapper.classList.toggle('maximized');
+        if (willMaximize) wrapper.classList.remove('minimized');
+        syncBodyScrollLock();
+      });
+    }
+
+    // The × button. Never removes the image — only resets size and drag.
+    function restoreDefaults(wrapper) {
+      withTransition(function () {
+        wrapper.classList.remove('maximized');
+        wrapper.classList.remove('minimized');
+        wrapper.style.width = '';
+        wrapper.style.height = '';
+        wrapper.style.transform = '';
+        wrapper.style.left = '';
+        wrapper.style.top = '';
+        syncBodyScrollLock();
+      });
+    }
+
+    // Read the current translate() from the wrapper, accounting for the CSS
+    // rule that offsets desktop windows by 40px.
+    function readTranslate(el) {
+      var t = getComputedStyle(el).transform;
+      if (!t || t === 'none') return { x: 0, y: 0 };
+      var m = t.match(/matrix\(([^)]+)\)/);
+      if (!m) return { x: 0, y: 0 };
+      var parts = m[1].split(',').map(parseFloat);
+      return { x: parts[4] || 0, y: parts[5] || 0 };
+    }
+
+    // Drag the window by its title bar.
+    function makeDraggable(wrapper, titlebar) {
+      function start(clientX, clientY) {
+        if (wrapper.classList.contains('maximized')) return null;
+        var origin = readTranslate(wrapper);
+        return { startX: clientX, startY: clientY, ox: origin.x, oy: origin.y };
+      }
+
+      titlebar.addEventListener('mousedown', function (e) {
+        if (e.button !== 0) return;
+        if (e.target.closest('.iw-controls')) return;
+        var ctx = start(e.clientX, e.clientY);
+        if (!ctx) return;
+        e.preventDefault();
+        wrapper.classList.add('dragging');
+
+        function onMove(ev) {
+          var dx = ev.clientX - ctx.startX;
+          var dy = ev.clientY - ctx.startY;
+          wrapper.style.transform =
+            'translate(' + (ctx.ox + dx) + 'px, ' + (ctx.oy + dy) + 'px)';
+        }
+        function onUp() {
+          wrapper.classList.remove('dragging');
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+        }
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+      });
+
+      titlebar.addEventListener(
+        'touchstart',
+        function (e) {
+          if (e.touches.length !== 1) return;
+          if (e.target.closest('.iw-controls')) return;
+          var t0 = e.touches[0];
+          var ctx = start(t0.clientX, t0.clientY);
+          if (!ctx) return;
+          wrapper.classList.add('dragging');
+
+          function onMove(ev) {
+            if (ev.touches.length !== 1) return;
+            var t = ev.touches[0];
+            var dx = t.clientX - ctx.startX;
+            var dy = t.clientY - ctx.startY;
+            wrapper.style.transform =
+              'translate(' + (ctx.ox + dx) + 'px, ' + (ctx.oy + dy) + 'px)';
+            ev.preventDefault();
+          }
+          function onEnd() {
+            wrapper.classList.remove('dragging');
+            document.removeEventListener('touchmove', onMove);
+            document.removeEventListener('touchend', onEnd);
+          }
+          document.addEventListener('touchmove', onMove, { passive: false });
+          document.addEventListener('touchend', onEnd);
+        },
+        { passive: true }
+      );
+    }
+
+    // Strip Chirpy's auto-popup link and lightbox hooks so our maximize
+    // wins. Run once at wrap time and again on any future DOM mutation
+    // (Chirpy may run its image processing after we do).
+    function neutralizeLightbox(img) {
+      img.classList.add('no-popup');
+      img.removeAttribute('data-glightbox');
+      img.removeAttribute('data-src');
+      img.removeAttribute('data-popup');
+      img.removeAttribute('data-fancybox');
+    }
+    function unwrapImageLinks(root) {
+      root.querySelectorAll('a').forEach(function (a) {
+        var only = a.children.length === 1 && a.children[0].tagName === 'IMG';
+        if (only) {
+          a.parentNode.insertBefore(a.children[0], a);
+          a.remove();
+        }
+      });
+    }
+
+    function buildWindow(filename) {
+      var wrapper = document.createElement('div');
+      wrapper.className = 'image-window';
+      wrapper.setAttribute('data-filename', filename);
+      wrapper.style.viewTransitionName = 'iw-' + (++iwCounter);
+
+      var titlebar = document.createElement('div');
+      titlebar.className = 'iw-titlebar';
+
+      var filenameSpan = document.createElement('span');
+      filenameSpan.className = 'iw-filename';
+      filenameSpan.textContent = filename;
+
+      var controls = document.createElement('div');
+      controls.className = 'iw-controls';
+      var minBtn = makeButton('iw-min', 'Minimize', '—');
+      var maxBtn = makeButton('iw-max', 'Toggle full-size view', '□');
+      var restoreBtn = makeButton('iw-restore', 'Restore default size', '×');
+      controls.appendChild(minBtn);
+      controls.appendChild(maxBtn);
+      controls.appendChild(restoreBtn);
+
+      titlebar.appendChild(filenameSpan);
+      titlebar.appendChild(controls);
+
+      var body = document.createElement('div');
+      body.className = 'iw-body';
+
+      wrapper.appendChild(titlebar);
+      wrapper.appendChild(body);
+
+      minBtn.addEventListener('click', function () {
+        wrapper.classList.toggle('minimized');
+      });
+      maxBtn.addEventListener('click', function () {
+        toggleMaximize(wrapper);
+      });
+      restoreBtn.addEventListener('click', function () {
+        restoreDefaults(wrapper);
+      });
+      titlebar.addEventListener('dblclick', function (e) {
+        if (e.target.closest('.iw-controls')) return;
+        wrapper.classList.toggle('minimized');
+      });
+
+      makeDraggable(wrapper, titlebar);
+
+      // Watch this window for any <a> Chirpy might inject around the image
+      // after we wrap, and strip it.
+      var observer = new MutationObserver(function () {
+        unwrapImageLinks(wrapper);
+        wrapper.querySelectorAll('img').forEach(neutralizeLightbox);
+      });
+      observer.observe(wrapper, { childList: true, subtree: true });
+
+      return { wrapper: wrapper, body: body };
+    }
+
+    // Group consecutive image-windows under .content into a single
+    // flex row so adjacent screenshots sit side by side.
+    function pairAdjacentImageWindows() {
+      var content = document.querySelector('article.px-1 .content');
+      if (!content) return;
+      var children = Array.prototype.slice.call(content.children);
+      var i = 0;
+      while (i < children.length) {
+        var el = children[i];
+        var isWin =
+          el.classList && el.classList.contains('image-window') &&
+          !el.dataset.paired;
+        if (!isWin) {
+          i++;
+          continue;
+        }
+        var run = [el];
+        var j = i + 1;
+        while (
+          j < children.length &&
+          children[j].classList &&
+          children[j].classList.contains('image-window') &&
+          !children[j].dataset.paired
+        ) {
+          run.push(children[j]);
+          j++;
+        }
+        if (run.length > 1) {
+          var pair = document.createElement('div');
+          pair.className = 'image-window-pair';
+          el.parentNode.insertBefore(pair, el);
+          run.forEach(function (w) {
+            pair.appendChild(w);
+            w.dataset.paired = '1';
+          });
+        }
+        i = j;
+      }
+    }
+
+    function wrapImagesAsWindows() {
+      // Pre-clean: any existing windows shouldn't carry stale lightbox links.
+      document
+        .querySelectorAll('article.px-1 .image-window')
+        .forEach(function (w) {
+          unwrapImageLinks(w);
+          w.querySelectorAll('img').forEach(neutralizeLightbox);
+        });
+
+      var imgs = document.querySelectorAll('article.px-1 .content img');
+      imgs.forEach(function (img) {
+        if (!img.src) return;
+        if (img.closest('.image-window')) return;
+
+        // Strip any <a> Chirpy already wrapped around this image.
+        if (img.parentElement && img.parentElement.tagName === 'A') {
+          var a = img.parentElement;
+          a.parentNode.insertBefore(img, a);
+          a.remove();
+        }
+        neutralizeLightbox(img);
+
+        var filename;
+        try {
+          filename = decodeURIComponent(
+            img.src.split('/').pop().split('?')[0].split('#')[0]
+          );
+        } catch (e) {
+          filename = img.src.split('/').pop();
+        }
+        if (!filename) return;
+
+        var target = img;
+        var p = img.parentElement;
+        if (p) {
+          if (p.tagName === 'FIGURE') target = p;
+          else if (p.classList && p.classList.contains('shimmer')) target = p;
+        }
+
+        var parent = target.parentElement;
+        if (!parent) return;
+
+        var win = buildWindow(filename);
+
+        var onlyChild =
+          parent.tagName === 'P' &&
+          parent.children.length === 1 &&
+          parent.children[0] === target &&
+          parent.textContent.trim() === '';
+
+        if (onlyChild) {
+          parent.parentNode.insertBefore(win.wrapper, parent);
+          win.body.appendChild(target);
+          parent.remove();
+        } else {
+          parent.insertBefore(win.wrapper, target);
+          win.body.appendChild(target);
+        }
+
+        // Click the image to toggle maximize. Capture phase + stopPropagation
+        // so Chirpy's lightbox listeners (if any) never fire.
+        var imgEl = win.body.querySelector('img');
+        if (imgEl) {
+          imgEl.addEventListener(
+            'click',
+            function (e) {
+              e.preventDefault();
+              e.stopPropagation();
+              toggleMaximize(win.wrapper);
+            },
+            true
+          );
+        }
+      });
+    }
+
+    function init() {
+      wrapImagesAsWindows();
+      pairAdjacentImageWindows();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+    // Run again after all assets and theme scripts have settled, in case
+    // Chirpy's lightbox setup ran after DOMContentLoaded.
+    window.addEventListener('load', function () {
+      wrapImagesAsWindows();
+      pairAdjacentImageWindows();
+    });
+  })();
+</script>
+
+{% include melix-panel-windows.html %}

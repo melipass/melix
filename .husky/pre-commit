@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+# .githooks/pre-commit
+#
+# Strip identity-revealing metadata (EXIF, IPTC, XMP, GPS, QuickTime atoms)
+# from any image or video staged under assets/img/ or assets/video/ before
+# the commit is recorded. The unstripped original is rewritten in place
+# in the working tree, then re-staged. The git object that lands in the
+# commit is the stripped one — the original blob is briefly in the object
+# store but is unreachable from any commit and gets garbage-collected,
+# so it never reaches `origin`.
+#
+# Requires: exiftool  (brew install exiftool)
+#
+# Activate this hook once per clone:
+#   git config core.hooksPath .githooks
+#
+# Compatible with bash 3.2 (the system bash on macOS).
+
+set -euo pipefail
+
+PROTECTED_REGEX='^(assets/img/|assets/video/)'
+
+# Read staged files (added/copied/modified/renamed) under protected paths.
+staged=()
+while IFS= read -r f; do
+  [ -n "$f" ] && staged+=("$f")
+done < <(
+  git diff --cached --name-only --diff-filter=ACMR \
+    | { grep -E "$PROTECTED_REGEX" || true; }
+)
+
+if [ ${#staged[@]} -eq 0 ]; then
+  exit 0
+fi
+
+if ! command -v exiftool >/dev/null 2>&1; then
+  cat >&2 <<'ERR'
+exiftool not found.
+
+This commit touches files under assets/img/ or assets/video/. The
+pre-commit hook strips identity-revealing metadata before they enter
+the repository, but it needs exiftool. Install it once with:
+
+    brew install exiftool
+
+Then retry the commit.
+ERR
+  exit 1
+fi
+
+# Case-insensitive extension matching (bash 3-friendly).
+shopt -s nocasematch
+
+stripped=0
+for f in "${staged[@]}"; do
+  [ -f "$f" ] || continue
+  case "$f" in
+    *.jpg|*.jpeg|*.png|*.webp|*.heic|*.tif|*.tiff|*.gif|\
+*.mp4|*.mov|*.m4v|*.webm|*.avi|*.mkv)
+      printf 'stripping metadata: %s\n' "$f"
+      # Wipe everything except the ICC color profile so screenshots and
+      # photos keep accurate colors.
+      exiftool -overwrite_original -all= --icc_profile:all= "$f" >/dev/null
+      git add "$f"
+      stripped=$((stripped + 1))
+      ;;
+    *.svg)
+      # SVGs are XML — metadata lives in <metadata>, <title>, and <desc>
+      # tags. Audit those by hand.
+      ;;
+  esac
+done
+
+shopt -u nocasematch
+
+if [ "$stripped" -gt 0 ]; then
+  printf '%d file(s) stripped and re-staged.\n' "$stripped"
+fi
+exit 0

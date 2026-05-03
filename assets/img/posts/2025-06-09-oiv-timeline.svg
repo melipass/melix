@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 940" role="img" aria-labelledby="oiv-title oiv-desc" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <title id="oiv-title">Vital Importance Operator (OIV) qualification process</title>
+  <desc id="oiv-desc">A vertical timeline of six stages, each separated by 30 calendar days: process start on May 30, sectoral technical report, preliminary list published with public consultation, public consultation closes, executive summary, and final OIV list. Source: ANCI.</desc>
+
+  <rect x="0" y="0" width="720" height="940" fill="#ffffff"/>
+
+  <text x="60" y="44" font-size="22" font-weight="700" fill="#0A0A0A">Vital Importance Operator (OIV)</text>
+  <text x="60" y="72" font-size="22" font-weight="700" fill="#0A0A0A">qualification process</text>
+
+  <defs>
+    <marker id="oiv-arrow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="14" markerHeight="14" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#1F6BC0"/>
+    </marker>
+  </defs>
+
+  <line x1="60" y1="125" x2="60" y2="855" stroke="#1F6BC0" stroke-width="3" marker-end="url(#oiv-arrow)"/>
+
+  <circle cx="60" cy="135" r="22" fill="#E8F0FB" stroke="#1F6BC0" stroke-width="3"/>
+  <text x="60" y="142" font-size="18" font-weight="700" text-anchor="middle" fill="#1F6BC0">1</text>
+  <text x="100" y="130" font-size="18" font-weight="600" fill="#0A0A0A">Process start</text>
+  <text x="100" y="153" font-size="16" fill="#5A5A5A">May 30</text>
+
+  <text x="100" y="220" font-size="14" font-style="italic" fill="#5A5A5A">30 calendar days</text>
+
+  <circle cx="60" cy="275" r="22" fill="#E8F0FB" stroke="#1F6BC0" stroke-width="3"/>
+  <text x="60" y="282" font-size="18" font-weight="700" text-anchor="middle" fill="#1F6BC0">2</text>
+  <text x="100" y="282" font-size="18" font-weight="600" fill="#0A0A0A">Sectoral technical report</text>
+
+  <text x="100" y="350" font-size="14" font-style="italic" fill="#5A5A5A">30 calendar days</text>
+
+  <circle cx="60" cy="415" r="22" fill="#E8F0FB" stroke="#1F6BC0" stroke-width="3"/>
+  <text x="60" y="422" font-size="18" font-weight="700" text-anchor="middle" fill="#1F6BC0">3</text>
+  <text x="100" y="408" font-size="18" font-weight="600" fill="#0A0A0A">Preliminary list published /</text>
+  <text x="100" y="431" font-size="18" font-weight="600" fill="#0A0A0A">public consultation begins</text>
+
+  <text x="100" y="498" font-size="14" font-style="italic" fill="#5A5A5A">30 calendar days</text>
+
+  <circle cx="60" cy="555" r="22" fill="#E8F0FB" stroke="#1F6BC0" stroke-width="3"/>
+  <text x="60" y="562" font-size="18" font-weight="700" text-anchor="middle" fill="#1F6BC0">4</text>
+  <text x="100" y="562" font-size="18" font-weight="600" fill="#0A0A0A">Public consultation closes</text>
+
+  <text x="100" y="630" font-size="14" font-style="italic" fill="#5A5A5A">30 calendar days</text>
+
+  <circle cx="60" cy="695" r="22" fill="#E8F0FB" stroke="#1F6BC0" stroke-width="3"/>
+  <text x="60" y="702" font-size="18" font-weight="700" text-anchor="middle" fill="#1F6BC0">5</text>
+  <text x="100" y="702" font-size="18" font-weight="600" fill="#0A0A0A">Executive summary</text>
+
+  <text x="100" y="770" font-size="14" font-style="italic" fill="#5A5A5A">30 calendar days</text>
+
+  <circle cx="60" cy="835" r="22" fill="#E8F0FB" stroke="#1F6BC0" stroke-width="3"/>
+  <text x="60" y="842" font-size="18" font-weight="700" text-anchor="middle" fill="#1F6BC0">6</text>
+  <text x="100" y="835" font-size="18" font-weight="600" fill="#0A0A0A">Final OIV list</text>
+
+  <text x="60" y="910" font-size="13" fill="#7A7A7A">Source: ANCI</text>
+</svg>

@@ -1,0 +1,254 @@
+---
+layout: default
+---
+
+{% include lang.html %}
+
+{% assign all_pinned = site.posts | where: 'pin', 'true' %}
+{% assign all_normal = site.posts | where_exp: 'item', 'item.pin != true and item.hidden != true' %}
+
+{% assign posts = '' | split: '' %}
+
+<!-- Get pinned posts on current page -->
+
+{% assign visible_start = paginator.page | minus: 1 | times: paginator.per_page %}
+{% assign visible_end = visible_start | plus: paginator.per_page %}
+
+{% if all_pinned.size > visible_start %}
+  {% if all_pinned.size > visible_end %}
+    {% assign pinned_size = paginator.per_page %}
+  {% else %}
+    {% assign pinned_size = all_pinned.size | minus: visible_start %}
+  {% endif %}
+
+  {% for i in (visible_start..all_pinned.size) limit: pinned_size %}
+    {% assign posts = posts | push: all_pinned[i] %}
+  {% endfor %}
+{% else %}
+  {% assign pinned_size = 0 %}
+{% endif %}
+
+<!-- Get normal posts on current page -->
+
+{% assign normal_size = paginator.posts | size | minus: pinned_size %}
+
+{% if normal_size > 0 %}
+  {% if pinned_size > 0 %}
+    {% assign normal_start = 0 %}
+  {% else %}
+    {% assign normal_start = visible_start | minus: all_pinned.size %}
+  {% endif %}
+
+  {% assign normal_end = normal_start | plus: normal_size | minus: 1 %}
+
+  {% for i in (normal_start..normal_end) %}
+    {% assign posts = posts | push: all_normal[i] %}
+  {% endfor %}
+{% endif %}
+
+<div id="post-list" class="flex-grow-1 px-xl-1">
+  {% for post in posts %}
+    <article class="card-wrapper card" data-filename="{{ post.slug }}.md">
+      <div class="card-titlebar">
+        <span class="card-filename">{{ post.slug }}.md</span>
+        <div class="card-controls">
+          <button type="button" class="cw-min" aria-label="Minimize" title="Minimize">—</button>
+          <button type="button" class="cw-max" aria-label="Open post" title="Open post" data-href="{{ post.url | relative_url }}">□</button>
+          <button type="button" class="cw-close" aria-label="" title="" tabindex="-1">×</button>
+        </div>
+      </div>
+      <a href="{{ post.url | relative_url }}" class="post-preview row g-0 flex-md-row-reverse">
+        {% assign card_body_col = '12' %}
+
+        {% if post.image %}
+          {% assign src = post.image.path | default: post.image %}
+
+          {% if post.media_subpath %}
+            {% unless src contains '://' %}
+              {% assign src = post.media_subpath
+                | append: '/'
+                | append: src
+                | replace: '///', '/'
+                | replace: '//', '/'
+              %}
+            {% endunless %}
+          {% endif %}
+
+          {% if post.image.lqip %}
+            {% assign lqip = post.image.lqip %}
+
+            {% if post.media_subpath %}
+              {% unless lqip contains 'data:' %}
+                {% assign lqip = post.media_subpath
+                  | append: '/'
+                  | append: lqip
+                  | replace: '///', '/'
+                  | replace: '//', '/'
+                %}
+              {% endunless %}
+            {% endif %}
+
+            {% assign lqip_attr = 'lqip="' | append: lqip | append: '"' %}
+          {% endif %}
+
+          {% assign alt = post.image.alt | xml_escape | default: 'Preview Image' %}
+
+          <div class="col-md-5 card-media">
+            <img src="{{ src }}" alt="{{ alt }}" {{ lqip_attr }}>
+            {% if post.video %}
+              <video
+                data-src="{{ post.video | relative_url }}"
+                muted
+                loop
+                playsinline
+                preload="none"
+                aria-hidden="true"
+              ></video>
+            {% endif %}
+          </div>
+
+          {% assign card_body_col = '7' %}
+        {% endif %}
+
+        <div class="col-md-{{ card_body_col }}">
+          <div class="card-body d-flex flex-column">
+            <h1 class="card-title my-2 mt-md-0">{{ post.title }}</h1>
+
+            <div class="card-text content mt-0 mb-3">
+              <p>{% include post-summary.html %}</p>
+            </div>
+
+            <div class="post-meta flex-grow-1 d-flex align-items-end">
+              <div class="me-auto">
+                <!-- posted date -->
+                <i class="far fa-calendar fa-fw me-1"></i>
+                {% include datetime.html date=post.date lang=lang %}
+
+                <!-- categories -->
+                {% if post.categories.size > 0 %}
+                  <i class="far fa-folder-open fa-fw me-1"></i>
+                  <span class="categories">
+                    {% for category in post.categories %}
+                      {{ category }}
+                      {%- unless forloop.last -%},{%- endunless -%}
+                    {% endfor %}
+                  </span>
+                {% endif %}
+              </div>
+
+              {% if post.pin %}
+                <div class="pin ms-1">
+                  <i class="fas fa-thumbtack fa-fw"></i>
+                  <span>{{ site.data.locales[lang].post.pin_prompt }}</span>
+                </div>
+              {% endif %}
+            </div>
+            <!-- .post-meta -->
+          </div>
+          <!-- .card-body -->
+        </div>
+      </a>
+    </article>
+  {% endfor %}
+</div>
+<!-- #post-list -->
+
+{% if paginator.total_pages > 1 %}
+  {% include post-paginator.html %}
+{% endif %}
+
+<script>
+  (function () {
+    document.querySelectorAll('article.card-wrapper').forEach(function (card) {
+      var minBtn = card.querySelector('.cw-min');
+      var maxBtn = card.querySelector('.cw-max');
+      var closeBtn = card.querySelector('.cw-close');
+
+      // — minimize: collapse to title bar
+      if (minBtn) {
+        minBtn.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          card.classList.toggle('card-minimized');
+        });
+      }
+
+      // □ maximize: navigate to the post
+      if (maxBtn) {
+        maxBtn.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          var href = maxBtn.getAttribute('data-href');
+          if (href) window.location.href = href;
+        });
+      }
+
+      // × close: deliberately no-op on the homepage, but stop the click so
+      // it doesn't bubble to the wrapping <a> and navigate.
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+        });
+      }
+
+      // Hover: play the (already-preloaded) video. Always muted. No layout
+      // jump because the video is positioned absolutely and matches the
+      // image's bounding box (see CSS).
+      var video = card.querySelector('video[data-src]');
+      if (video) {
+        var ensureMuted = function () {
+          video.muted = true;
+          video.defaultMuted = true;
+        };
+        ensureMuted();
+
+        card.addEventListener('mouseenter', function () {
+          if (card.classList.contains('card-minimized')) return;
+          // Fallback: if the post-load preload hasn't run yet, kick it.
+          if (!video.src && video.dataset.src) {
+            video.src = video.dataset.src;
+          }
+          ensureMuted();
+          var p = video.play();
+          if (p && p.catch) p.catch(function () {});
+          video.classList.add('cw-loaded');
+        });
+        card.addEventListener('mouseleave', function () {
+          ensureMuted();
+          video.pause();
+          video.classList.remove('cw-loaded');
+        });
+        // Belt-and-braces: re-mute on any volume change.
+        video.addEventListener('volumechange', ensureMuted);
+      }
+    });
+
+    // Preload card hover videos AFTER the main page has finished loading.
+    // We don't block initial render or steal bandwidth from the critical path,
+    // but by the time the visitor hovers a card, the bytes are usually there.
+    function preloadCardVideos() {
+      document
+        .querySelectorAll('article.card-wrapper video[data-src]')
+        .forEach(function (video) {
+          if (video.src) return;
+          var src = video.getAttribute('data-src');
+          if (!src) return;
+          video.muted = true;
+          video.defaultMuted = true;
+          video.src = src;
+          video.load();
+        });
+    }
+    if (document.readyState === 'complete') {
+      // window.load already fired
+      setTimeout(preloadCardVideos, 200);
+    } else {
+      window.addEventListener('load', function () {
+        setTimeout(preloadCardVideos, 200);
+      });
+    }
+  })();
+</script>
+
+{% include melix-panel-windows.html %}

@@ -1,0 +1,999 @@
+---
+---
+
+@use 'main';
+
+/* =========================================================================
+   melix.cl — aesthetic overlay v3
+   References: Chelsea Manning's "README.txt" cover (Penguin Press, 2022)
+   and hayleywilliams.net (Win9x desktop metaphor).
+   Palette: user-supplied dark scheme (#282433 / #eee9fc + accents).
+   ========================================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+/* ---------- Palette tokens ---------- */
+
+/* Dark palette applies to every mode. Selectors here mirror exactly what
+   Chirpy uses inside its @media (prefers-color-scheme) blocks so they have
+   the same (0,1,1) specificity. With matching specificity and our rules
+   declared after `@use 'main'`, ours win the cascade regardless of the
+   visitor's OS preference or any stale `data-mode` value in localStorage. */
+:root,
+html,
+html:not([data-mode]),
+html[data-mode='dark'],
+html[data-mode='light'] {
+  --melix-bg:           #282433;
+  --melix-bg-shade:     #1f1c2a;
+  --melix-bg-deep:      #14101c;
+  --melix-surface:      #322b40;
+  --melix-surface-hi:   #3f3951;
+  --melix-fg:           #eee9fc;
+  --melix-fg-soft:      #938aad;
+  --melix-pink:         #e965a5;
+  --melix-mint:         #b1f2a7;
+  --melix-yellow:       #ebde76;
+  --melix-periwinkle:   #b1baf4;
+  --melix-purple:       #e192ef;
+  --melix-cyan:         #b3f4f3;
+
+  --melix-edge:         var(--melix-fg);
+  --melix-shadow:       rgba(0, 0, 0, 0.55);
+  --melix-stripe-a:     rgba(238, 233, 252, 0.05);
+  --melix-stripe-b:     rgba(238, 233, 252, 0.10);
+  --melix-stripe-c:     rgba(238, 233, 252, 0.02);
+
+  --melix-display: 'Archivo Black', 'Helvetica Neue', Helvetica, Arial,
+    sans-serif;
+  --melix-body: 'Space Grotesk', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Helvetica, Arial, sans-serif;
+  --melix-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo,
+    Consolas, monospace;
+
+  /* Map Chirpy tokens */
+  --main-bg:                var(--melix-bg);
+  --mask-bg:                var(--melix-bg-shade);
+  --text-color:             var(--melix-fg);
+  --text-muted-color:       var(--melix-fg-soft);
+  --heading-color:          var(--melix-fg);
+  --link-color:             var(--melix-purple);
+  --link-underline-color:   var(--melix-purple);
+  --label-color:            var(--melix-fg-soft);
+  --main-border-color:      var(--melix-edge);
+  --card-bg:                var(--melix-surface);
+  --card-hovor-bg:          var(--melix-surface-hi);
+  --card-border-color:      var(--melix-edge);
+  --sidebar-bg:             var(--melix-bg-deep);
+  --sidebar-muted-color:    rgba(238, 233, 252, 0.78);
+  --site-title-color:       var(--melix-fg);
+  --site-subtitle-color:    rgba(238, 233, 252, 0.65);
+  --search-border-color:    var(--melix-edge);
+  --button-bg:              var(--melix-surface);
+  --btn-border-color:       var(--melix-edge);
+  --tag-hover:              var(--melix-pink);
+  --tb-odd-bg:              var(--melix-surface);
+  --tb-even-bg:             var(--melix-bg);
+  --tb-border-color:        var(--melix-edge);
+  --code-block-bg:          var(--melix-bg-deep);
+  --code-header-text-color: var(--melix-fg);
+  --code-header-muted-color: var(--melix-fg-soft);
+  --code-header-icon-color: var(--melix-cyan);
+  --highlight-bg-color:     var(--melix-surface-hi);
+  --inline-code-bg:         var(--melix-surface);
+  --kbd-wrap-color:         var(--melix-edge);
+  --kbd-text-color:         var(--melix-fg);
+  --kbd-bg-color:           var(--melix-surface);
+  --blockquote-border-color: var(--melix-purple);
+  --blockquote-text-color:  var(--melix-fg-soft);
+}
+
+/* ---------- Solid backdrops everywhere main content lives ---------- */
+
+html,
+body {
+  background-color: var(--main-bg);
+}
+
+#main-wrapper,
+#main,
+main,
+.container,
+.container-fluid,
+.container-xl,
+#core-wrapper {
+  background-color: var(--main-bg);
+}
+
+/* ---------- Typography ---------- */
+
+html,
+body {
+  font-family: var(--melix-body);
+}
+
+h1, h2, h3, h4, h5, h6,
+.site-title,
+.card-title,
+.dynamic-title,
+#post-list h1,
+#post-list .card-title {
+  font-family: var(--melix-display) !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+
+h1 { letter-spacing: -0.025em; }
+
+code,
+kbd,
+pre,
+samp,
+.highlight,
+.post-meta,
+.post-tag,
+.label,
+.code-header,
+#breadcrumb {
+  font-family: var(--melix-mono) !important;
+}
+
+/* No rounded corners — Win9x sharpness */
+.card,
+.preview-img,
+.post-content img,
+#search-results .card,
+.btn,
+.popup,
+.toc-popup,
+input,
+.tags .post-tag,
+.post-tags .post-tag,
+.share-wrapper .share-button,
+.tooltip-inner,
+img.preview-img,
+img.normal,
+pre,
+code,
+.highlight,
+div.language-plaintext.highlighter-rouge {
+  border-radius: 0 !important;
+}
+
+/* ---------- Sidebar: docked window with striped panel ---------- */
+
+#sidebar {
+  /* IMPORTANT: do NOT set position here. Chirpy sets `position: fixed`
+     and overriding it drops the sidebar back into the document flow,
+     stacking it above main-wrapper. */
+  background-color: var(--melix-bg-deep);
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 4px,
+    var(--melix-stripe-a) 4px,
+    var(--melix-stripe-a) 5px,
+    transparent 5px,
+    transparent 9px,
+    var(--melix-stripe-b) 9px,
+    var(--melix-stripe-b) 11px,
+    transparent 11px,
+    transparent 16px,
+    var(--melix-stripe-c) 16px,
+    var(--melix-stripe-c) 17px,
+    transparent 17px,
+    transparent 21px,
+    var(--melix-stripe-a) 21px,
+    var(--melix-stripe-a) 22px,
+    transparent 22px,
+    transparent 27px,
+    var(--melix-stripe-b) 27px,
+    var(--melix-stripe-b) 29px
+  );
+  border-right: 2px solid var(--melix-edge);
+
+  &::before {
+    content: 'MELIX.CL';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 26px;
+    line-height: 26px;
+    background: linear-gradient(
+      to right,
+      var(--melix-bg-deep) 0%,
+      var(--melix-surface-hi) 100%
+    );
+    color: var(--melix-fg);
+    font-family: var(--melix-mono);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 3px;
+    padding: 0 12px;
+    border-bottom: 2px solid var(--melix-edge);
+    z-index: 2;
+  }
+
+  &::after {
+    content: '— □ ×';
+    position: absolute;
+    top: 0;
+    right: 8px;
+    height: 26px;
+    line-height: 26px;
+    color: var(--melix-fg);
+    font-family: var(--melix-mono);
+    font-size: 12px;
+    letter-spacing: 6px;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  > * {
+    /* push sidebar content below the title bar */
+    margin-top: 0;
+  }
+
+  .profile-wrapper {
+    margin-top: 28px !important;
+  }
+
+  #avatar {
+    border-radius: 0 !important;
+    border: 2px solid var(--melix-fg);
+
+    img {
+      border-radius: 0 !important;
+    }
+  }
+
+  .site-title a {
+    font-family: var(--melix-display) !important;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--melix-fg) !important;
+  }
+
+  .site-subtitle {
+    font-family: var(--melix-mono) !important;
+    font-style: normal !important;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    opacity: 0.85;
+  }
+
+  .nav-link {
+    font-family: var(--melix-mono) !important;
+    text-transform: lowercase;
+    letter-spacing: 0.05em;
+    border-radius: 0 !important;
+
+    &::before {
+      content: '▸ ';
+      color: var(--melix-purple);
+      margin-right: 4px;
+    }
+  }
+
+  .nav-item.active .nav-link {
+    background: var(--melix-surface-hi);
+    color: var(--melix-fg) !important;
+    border: 2px solid var(--melix-purple);
+
+    &::before {
+      content: '▾ ';
+      color: var(--melix-purple);
+    }
+  }
+
+  .sidebar-bottom .btn {
+    border: 2px solid var(--melix-fg) !important;
+    border-radius: 0 !important;
+    background: transparent;
+    color: var(--melix-fg) !important;
+
+    &:hover {
+      background: var(--melix-pink);
+      color: var(--melix-bg-deep) !important;
+    }
+  }
+}
+
+/* ---------- Topbar ---------- */
+
+#topbar-wrapper {
+  border-bottom: 2px solid var(--melix-edge);
+  background: var(--main-bg) !important;
+}
+
+/* ---------- Article window chrome ---------- */
+
+#post-list article {
+  margin-bottom: 1.75rem;
+}
+
+/* Shared chrome: border, shadow, background. */
+article[data-filename] {
+  position: relative;
+  border: 2px solid var(--melix-edge) !important;
+  border-radius: 0 !important;
+  box-shadow: 5px 5px 0 0 var(--melix-shadow);
+  background: var(--card-bg) !important;
+  overflow: visible;
+}
+
+/* Post-page article shell. The real-DOM `.card-titlebar` spans full width
+   from border to border; everything else sits inside a comfortable
+   horizontal inset. */
+#main-wrapper article.px-1[data-filename] {
+  padding: 0;
+}
+
+#main-wrapper article.px-1[data-filename] > .card-titlebar {
+  margin: 0 0 0.75rem;
+}
+
+#main-wrapper article.px-1[data-filename] > :not(.card-titlebar) {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+#main-wrapper article.px-1[data-filename] > .post-tail-wrapper {
+  padding-bottom: 1.5rem;
+}
+
+/* Hero image at the top of a post: window-style offset shadow only.
+   No frame, no matte, no rounded corners. Chirpy wraps the hero in
+   <a class="popup preview-img shimmer"><img></a>, so we kill the
+   radius on the wrapper *and* the inner img. */
+article.px-1[data-filename] .preview-img,
+article.px-1[data-filename] .preview-img img,
+article.px-1[data-filename] img.preview-img {
+  border-radius: 0 !important;
+}
+
+article.px-1[data-filename] .preview-img,
+article.px-1[data-filename] img.preview-img {
+  display: block;
+  box-shadow: 5px 5px 0 0 var(--melix-shadow);
+  margin: 1rem auto 1.5rem;
+  max-width: 100%;
+}
+
+/* Home cards: real DOM title bar with interactive buttons. */
+#post-list article.card-wrapper[data-filename] {
+  resize: both;
+  overflow: hidden;
+  transition: box-shadow 0.08s ease, background 0.08s ease;
+
+  &:hover:not(.card-minimized) {
+    box-shadow: 6px 6px 0 0 var(--melix-shadow);
+    background: var(--card-hovor-bg) !important;
+  }
+
+  &.card-minimized {
+    height: auto !important;
+    resize: horizontal;
+
+    > a.post-preview {
+      display: none;
+    }
+  }
+
+  .post-preview {
+    color: var(--melix-fg);
+  }
+
+  .card-title {
+    font-family: var(--melix-display) !important;
+    letter-spacing: -0.01em;
+    color: var(--melix-fg) !important;
+  }
+
+  .preview-img,
+  img.preview-img,
+  img {
+    border-radius: 0 !important;
+  }
+}
+
+.card-titlebar {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  height: 26px;
+  padding-left: 0.65rem;
+  background: linear-gradient(
+    to right,
+    var(--melix-bg-deep) 0%,
+    var(--melix-surface-hi) 100%
+  );
+  border-bottom: 2px solid var(--melix-edge);
+  user-select: none;
+  cursor: default;
+}
+
+.card-filename {
+  font-family: var(--melix-mono);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--melix-fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-grow: 1;
+  min-width: 0;
+  margin-right: 0.5rem;
+  align-self: center;
+}
+
+.card-controls {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.card-controls button {
+  border: none !important;
+  border-left: 1px solid var(--melix-edge) !important;
+  background: transparent !important;
+  width: 26px;
+  height: 24px;
+  color: var(--melix-fg) !important;
+  font-family: var(--melix-mono) !important;
+  font-size: 13px;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  transform: none !important;
+
+  &:hover {
+    background: var(--melix-pink) !important;
+    color: var(--melix-bg-deep) !important;
+  }
+}
+
+/* The × on home cards intentionally does nothing — only the homepage's
+   close button is dimmed/inert. Post pages use the same chrome but the
+   button is fully active (navigates home). */
+#post-list .card-controls .cw-close {
+  cursor: default;
+  opacity: 0.55;
+
+  &:hover {
+    background: transparent !important;
+    color: var(--melix-fg) !important;
+  }
+}
+
+/* ---------- Floating, resizable, minimizable image windows ---------- */
+
+.image-window {
+  position: relative;
+  display: block;
+  border: 2px solid var(--melix-edge);
+  border-radius: 0;
+  background: var(--card-bg);
+  box-shadow: 5px 5px 0 0 var(--melix-shadow);
+  margin: 1.75rem 0;
+  max-width: 100%;
+  width: fit-content;
+  resize: both;
+  overflow: hidden;
+  z-index: 5;
+}
+
+/* Float a touch right on wider viewports so they overlap the article column */
+@media (min-width: 992px) {
+  .image-window {
+    transform: translate(40px, 0);
+    margin-right: 0;
+  }
+}
+
+.image-window.minimized {
+  resize: horizontal;
+  height: auto !important;
+
+  .iw-body {
+    display: none;
+  }
+}
+
+/* When any image is maximized, lock body scroll so the page's own
+   scrollbar doesn't overlap the maximized window's title-bar controls. */
+body.image-maximized {
+  overflow: hidden;
+}
+
+/* Maximized: cover the viewport. The View Transitions API morphs from the
+   prior bounding rect to this one when supported. */
+.image-window.maximized {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  transform: none !important;
+  z-index: 9999;
+  resize: none;
+  box-shadow: none;
+  border-width: 2px;
+}
+
+.image-window.maximized .iw-body {
+  height: calc(100vh - 26px);
+  background: var(--melix-bg-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-window.maximized img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  cursor: zoom-out;
+}
+
+.image-window img {
+  cursor: zoom-in;
+}
+
+.iw-titlebar {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  height: 26px;
+  padding-left: 0.65rem;
+  background: linear-gradient(
+    to right,
+    var(--melix-bg-deep) 0%,
+    var(--melix-surface-hi) 100%
+  );
+  border-bottom: 2px solid var(--melix-edge);
+  user-select: none;
+  cursor: grab;
+}
+
+.iw-titlebar:active {
+  cursor: grabbing;
+}
+
+.image-window.dragging {
+  user-select: none;
+  box-shadow: 8px 8px 0 0 var(--melix-shadow);
+
+  .iw-titlebar {
+    cursor: grabbing;
+  }
+}
+
+.image-window.maximized .iw-titlebar {
+  cursor: default;
+}
+
+.iw-filename {
+  font-family: var(--melix-mono);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--melix-fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-grow: 1;
+  min-width: 0;
+  margin-right: 0.5rem;
+  align-self: center;
+}
+
+.iw-controls {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.iw-controls button {
+  border: none !important;
+  border-left: 1px solid var(--melix-edge) !important;
+  background: transparent !important;
+  width: 26px;
+  height: 24px;
+  color: var(--melix-fg) !important;
+  font-family: var(--melix-mono) !important;
+  font-size: 13px;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  transform: none !important;
+
+  &:hover {
+    background: var(--melix-pink) !important;
+    color: var(--melix-bg-deep) !important;
+  }
+
+  &:active {
+    background: var(--melix-purple) !important;
+  }
+}
+
+.iw-body {
+  display: block;
+  width: 100%;
+  height: calc(100% - 26px);
+  background: var(--card-bg);
+}
+
+.image-window img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 0 !important;
+  margin: 0 !important;
+}
+
+/* Cap non-maximized post images so they never dominate the viewport. */
+.image-window:not(.maximized) img {
+  max-height: 60vh;
+}
+
+/* Side-by-side: when adjacent images are wrapped together, render the pair
+   as a flex row so the screenshots sit shoulder to shoulder. */
+.image-window-pair {
+  display: flex;
+  gap: 1rem;
+  margin: 1.75rem 0;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.image-window-pair > .image-window {
+  flex: 1 1 calc(50% - 0.5rem);
+  min-width: 0;
+  margin: 0 !important;
+}
+
+/* The pair container carries the desktop offset; the inner windows start
+   with no transform so the JS-driven inline transform from drag wins. */
+@media (min-width: 992px) {
+  .image-window-pair {
+    transform: translate(40px, 0);
+  }
+}
+
+.image-window-pair > .image-window {
+  transform: none;
+}
+
+.image-window figure {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.image-window figcaption {
+  padding: 0.4rem 0.65rem;
+  font-style: italic;
+  font-size: 0.8rem;
+  color: var(--melix-fg-soft);
+  border-top: 1px dashed var(--melix-edge);
+}
+
+/* ---------- Tags as file labels ---------- */
+
+.post-tag,
+.post-tags .post-tag {
+  border-radius: 0 !important;
+  border: 1px solid var(--melix-edge) !important;
+  background: var(--melix-surface) !important;
+  color: var(--melix-fg) !important;
+  font-family: var(--melix-mono) !important;
+  text-transform: lowercase;
+
+  &::before {
+    content: '#';
+    margin-right: 2px;
+    color: var(--melix-purple);
+  }
+
+  &:hover {
+    background: var(--melix-pink) !important;
+    color: var(--melix-bg-deep) !important;
+
+    &::before { color: var(--melix-bg-deep); }
+  }
+}
+
+/* ---------- Code blocks ---------- */
+
+.code-header {
+  border-radius: 0 !important;
+  border-bottom: 2px solid var(--melix-edge);
+  background: var(--melix-bg-deep);
+  color: var(--melix-fg);
+
+  span,
+  button {
+    color: var(--melix-fg) !important;
+  }
+}
+
+pre {
+  border: 1px solid var(--melix-edge);
+}
+
+/* ---------- Buttons + pagination ---------- */
+
+.btn,
+.pagination .page-link {
+  border-radius: 0 !important;
+  border: 2px solid var(--melix-edge) !important;
+  font-family: var(--melix-mono) !important;
+  background: var(--melix-surface);
+  color: var(--melix-fg);
+  box-shadow: 2px 2px 0 0 var(--melix-shadow);
+  transition: transform 0.05s ease, box-shadow 0.05s ease;
+
+  &:hover {
+    background: var(--melix-pink);
+    color: var(--melix-bg-deep);
+  }
+
+  &:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 0 var(--melix-shadow);
+  }
+}
+
+/* ---------- Blockquote ---------- */
+
+blockquote {
+  border-left: 4px solid var(--melix-purple) !important;
+  background: var(--melix-surface);
+  font-family: var(--melix-body);
+  padding: 0.75rem 1rem;
+}
+
+/* ---------- Search ---------- */
+
+#search input,
+input[type='search'] {
+  border-radius: 0 !important;
+  border: 2px solid var(--melix-edge) !important;
+  font-family: var(--melix-mono) !important;
+  background: var(--melix-surface) !important;
+  color: var(--melix-fg) !important;
+}
+
+/* ---------- Dark-mode-only: hide the theme toggle ---------- */
+
+#mode-toggle,
+#mode-toggle-wrapper {
+  display: none !important;
+}
+
+/* ---------- Hover video on home cards ---------- */
+
+/* The image column normally stretches to row height (Bootstrap flex). That
+   makes a position:absolute video bigger than the image. Pin to flex-start
+   so the column sizes to the image, and the overlaid video matches. */
+.col-md-5.card-media {
+  position: relative;
+  overflow: hidden;
+  align-self: flex-start;
+}
+
+.col-md-5.card-media > img {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: auto;
+  z-index: 1;
+}
+
+.col-md-5.card-media > video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  pointer-events: none;
+  z-index: 2;
+  background: var(--melix-bg-deep);
+}
+
+.card-wrapper:hover > a.post-preview > .col-md-5.card-media > video.cw-loaded {
+  opacity: 1;
+}
+
+/* ---------- Right-column panel windows (Recently Updated, Trending Tags, Contents) ---------- */
+
+.panel-window {
+  position: relative;
+  border: 2px solid var(--melix-edge);
+  background: var(--card-bg);
+  margin: 0 0 1.5rem 0;
+  box-shadow: 4px 4px 0 0 var(--melix-shadow);
+  resize: both;
+  overflow: hidden;
+  z-index: 3;
+}
+
+.panel-window.minimized {
+  resize: horizontal;
+  height: auto !important;
+}
+
+.panel-window.minimized .pw-body {
+  display: none;
+}
+
+.panel-window.dragging {
+  user-select: none;
+  box-shadow: 8px 8px 0 0 var(--melix-shadow);
+  z-index: 50;
+}
+
+.pw-titlebar {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  height: 24px;
+  padding-left: 0.55rem;
+  background: linear-gradient(
+    to right,
+    var(--melix-bg-deep) 0%,
+    var(--melix-surface-hi) 100%
+  );
+  border-bottom: 2px solid var(--melix-edge);
+  user-select: none;
+  cursor: grab;
+}
+
+.pw-titlebar:active {
+  cursor: grabbing;
+}
+
+.panel-window.dragging .pw-titlebar {
+  cursor: grabbing;
+}
+
+.pw-title {
+  font-family: var(--melix-mono);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 1.2px;
+  color: var(--melix-fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-grow: 1;
+  min-width: 0;
+  margin-right: 0.5rem;
+  align-self: center;
+  text-transform: uppercase;
+}
+
+.pw-controls {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.pw-controls button {
+  border: none !important;
+  border-left: 1px solid var(--melix-edge) !important;
+  background: transparent !important;
+  width: 26px;
+  height: 22px;
+  color: var(--melix-fg) !important;
+  font-family: var(--melix-mono) !important;
+  font-size: 13px;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.pw-controls button:hover {
+  background: var(--melix-pink) !important;
+  color: var(--melix-bg-deep) !important;
+}
+
+.pw-body {
+  padding: 0.6rem 0.85rem 0.85rem;
+}
+
+.pw-body section {
+  margin: 0;
+}
+
+/* The original panel heading is hidden inline by the JS (display: none on
+   the heading element). This is a defensive backstop. */
+.pw-body .panel-heading {
+  display: none !important;
+}
+
+/* ---------- Section windows on /work, /about and other tab pages ---------- */
+
+.section-window {
+  position: relative;
+  border: 2px solid var(--melix-edge);
+  background: var(--card-bg);
+  margin: 1.5rem 0;
+  box-shadow: 4px 4px 0 0 var(--melix-shadow);
+}
+
+.section-window > .sw-titlebar {
+  margin: 0 !important;
+  padding: 0.4rem 5rem 0.4rem 0.75rem !important;
+  background: linear-gradient(
+    to right,
+    var(--melix-bg-deep) 0%,
+    var(--melix-surface-hi) 100%
+  );
+  color: var(--melix-fg) !important;
+  font-family: var(--melix-mono) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  letter-spacing: 1px !important;
+  border-bottom: 2px solid var(--melix-edge);
+  line-height: 1.4;
+  position: relative;
+}
+
+.section-window > .sw-titlebar::after {
+  content: '— □ ×';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 12px;
+  color: var(--melix-fg);
+  font-family: var(--melix-mono);
+  font-size: 12px;
+  letter-spacing: 5px;
+  pointer-events: none;
+}
+
+.section-window > .sw-body {
+  padding: 1rem 1.25rem;
+}
+
+.section-window > .sw-body > :first-child {
+  margin-top: 0;
+}
+
+.section-window > .sw-body > :last-child {
+  margin-bottom: 0;
+}
+
+/* Inner h3 windows: smaller chrome */
+.section-window-h3 {
+  box-shadow: 3px 3px 0 0 var(--melix-shadow);
+  margin: 1rem 0;
+}
+
+.section-window-h3 > .sw-titlebar {
+  padding: 0.35rem 5rem 0.35rem 0.65rem !important;
+  font-size: 12px !important;
+}
+
+.section-window-h3 > .sw-body {
+  padding: 0.75rem 1rem;
+}

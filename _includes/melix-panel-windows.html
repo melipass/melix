@@ -1,0 +1,136 @@
+<script>
+  (function () {
+    function readTranslate(el) {
+      var t = getComputedStyle(el).transform;
+      if (!t || t === 'none') return { x: 0, y: 0 };
+      var m = t.match(/matrix\(([^)]+)\)/);
+      if (!m) return { x: 0, y: 0 };
+      var parts = m[1].split(',').map(parseFloat);
+      return { x: parts[4] || 0, y: parts[5] || 0 };
+    }
+
+    function makeDraggable(wrapper, titlebar) {
+      function start(clientX, clientY) {
+        if (wrapper.classList.contains('minimized')) return null;
+        var origin = readTranslate(wrapper);
+        return { startX: clientX, startY: clientY, ox: origin.x, oy: origin.y };
+      }
+      titlebar.addEventListener('mousedown', function (e) {
+        if (e.button !== 0) return;
+        if (e.target.closest('.pw-controls')) return;
+        var ctx = start(e.clientX, e.clientY);
+        if (!ctx) return;
+        e.preventDefault();
+        wrapper.classList.add('dragging');
+        function onMove(ev) {
+          var dx = ev.clientX - ctx.startX;
+          var dy = ev.clientY - ctx.startY;
+          wrapper.style.transform =
+            'translate(' + (ctx.ox + dx) + 'px, ' + (ctx.oy + dy) + 'px)';
+        }
+        function onUp() {
+          wrapper.classList.remove('dragging');
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+        }
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+      });
+      titlebar.addEventListener(
+        'touchstart',
+        function (e) {
+          if (e.touches.length !== 1) return;
+          if (e.target.closest('.pw-controls')) return;
+          var t0 = e.touches[0];
+          var ctx = start(t0.clientX, t0.clientY);
+          if (!ctx) return;
+          wrapper.classList.add('dragging');
+          function onMove(ev) {
+            if (ev.touches.length !== 1) return;
+            var t = ev.touches[0];
+            var dx = t.clientX - ctx.startX;
+            var dy = t.clientY - ctx.startY;
+            wrapper.style.transform =
+              'translate(' + (ctx.ox + dx) + 'px, ' + (ctx.oy + dy) + 'px)';
+            ev.preventDefault();
+          }
+          function onEnd() {
+            wrapper.classList.remove('dragging');
+            document.removeEventListener('touchmove', onMove);
+            document.removeEventListener('touchend', onEnd);
+          }
+          document.addEventListener('touchmove', onMove, { passive: false });
+          document.addEventListener('touchend', onEnd);
+        },
+        { passive: true }
+      );
+    }
+
+    function wrapPanel(section, heading) {
+      if (section.dataset.pwWrapped === '1') return;
+
+      var title = (heading.textContent || '').trim();
+
+      var win = document.createElement('div');
+      win.className = 'panel-window';
+      win.setAttribute('data-panel-title', title);
+
+      var titlebar = document.createElement('div');
+      titlebar.className = 'pw-titlebar';
+
+      var titleSpan = document.createElement('span');
+      titleSpan.className = 'pw-title';
+      titleSpan.textContent = title;
+
+      var controls = document.createElement('div');
+      controls.className = 'pw-controls';
+      var minBtn = document.createElement('button');
+      minBtn.type = 'button';
+      minBtn.className = 'pw-min';
+      minBtn.setAttribute('aria-label', 'Minimize or restore');
+      minBtn.title = 'Minimize / restore';
+      minBtn.textContent = '—';
+      controls.appendChild(minBtn);
+
+      titlebar.appendChild(titleSpan);
+      titlebar.appendChild(controls);
+
+      var body = document.createElement('div');
+      body.className = 'pw-body';
+
+      win.appendChild(titlebar);
+      win.appendChild(body);
+
+      // Insert wrapper, then move section in. Hide the section's own
+      // heading because the title bar carries the same text now.
+      section.parentNode.insertBefore(win, section);
+      heading.style.display = 'none';
+      body.appendChild(section);
+
+      section.dataset.pwWrapped = '1';
+
+      minBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        win.classList.toggle('minimized');
+      });
+
+      makeDraggable(win, titlebar);
+    }
+
+    function wrapAllPanels() {
+      document.querySelectorAll('h2.panel-heading').forEach(function (h) {
+        var section = h.closest('section');
+        if (section) wrapPanel(section, h);
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', wrapAllPanels);
+    } else {
+      wrapAllPanels();
+    }
+    // The TOC section can populate late (Tocbot runs after load).
+    window.addEventListener('load', wrapAllPanels);
+  })();
+</script>
