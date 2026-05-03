@@ -17,6 +17,11 @@ permissions:
   pages: write
   id-token: write
 
+# Opt JS actions into Node 24 ahead of the June 2026 cutoff so the Node 20
+# deprecation warning stops appearing on every run.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 # Allow one concurrent deployment
 concurrency:
   group: "pages"
@@ -55,8 +60,8 @@ jobs:
       - name: Test site
         run: |
           bundle exec htmlproofer _site \
-            \-\-disable-external \
-            \-\-ignore-urls "/^http:\/\/127.0.0.1/,/^http:\/\/0.0.0.0/,/^http:\/\/localhost/"
+            --disable-external \
+            --ignore-urls "/^http:\/\/127.0.0.1/,/^http:\/\/0.0.0.0/,/^http:\/\/localhost/"
 
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v4
