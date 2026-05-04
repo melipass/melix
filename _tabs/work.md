@@ -11,6 +11,12 @@ Security Engineer passionate about Cloud Computing and AI. Interested in working
 ### Fintual — *CISO at Fintual Prepago*
 *Jul 2024 – Present · Santiago, Chile and Mexico City, Mexico*
 
+Joined as Security Engineer and was quickly asked to take on the CISO role for Fintual Prepago — the branch licensed to issue prepaid cards and run instant bank transfers in Chile — while keeping security responsibilities across all other Fintual companies including Mexico. Led the design and full implementation of Fintual's ISMS alongside Francisco Casado (CISO of Fintual SpA) based on ISO/IEC 27001:2022, driving the program to a successful certification.
+
+Built an AI-powered assets and vendor assessment pipeline covering 500+ documents across ~100 suppliers, evaluating contracts, DPAs, privacy policies, and security reports against ISO 27001:2022 and Chile's new data protection law (Ley 21.719) — condensing months of review into under an hour with structured, audit-ready evidence. Also designed automated threat intelligence workflows that classify findings by type and business impact for incident responders. Owned AI security and governance: secured zero-data-retention agreements and DPAs, managed subprocessors, and shipped policy-aware guardrails for internal LLM use.
+
+Chaired the InfoSec and Personal Data Protection Committees. Collaborated on Fintual's biometric identity verification and passkey rollout (including Registro Civil certificates for NFC ID validation) and defined the video-call fallback for users who can't or choose not to use biometrics. Handled incident response, fraud detection, and data anonymization. Stopped credential stuffing attacks targeting Fintual users. Maintained access management, endpoint, network, cloud, and WAF security via internal tools. Coordinated regulatory engagement with Chile's CMF and ANCI under Ley 19.628 / 21.719 and Mexico's LFPDPPP.
+
 ### Bending Spoons — *Security and Privacy Engineer*
 *Oct 2023 – Apr 2024 · Milan, Italy*
 
