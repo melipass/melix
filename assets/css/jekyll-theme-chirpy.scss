@@ -429,8 +429,9 @@ article.px-1[data-filename] img.preview-img {
   }
 
   .card-title {
-    font-family: var(--melix-display) !important;
-    letter-spacing: -0.01em;
+    font-family: var(--melix-body) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0;
     color: var(--melix-fg) !important;
   }
 
