@@ -404,6 +404,36 @@ article.px-1[data-filename] img.preview-img {
   max-width: 100%;
 }
 
+/* Hover-video on the post hero. The container is the wrapper Chirpy
+   already emits (`<div class="mt-3 mb-3">`); we just tag it with
+   .post-hero-media in post.html so we can position a video on top of
+   the image without affecting the figcaption underneath. */
+.post-hero-media {
+  position: relative;
+}
+
+.post-hero-media > video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* Match the preview-img aspect-ratio (40/21 in Chirpy's CSS) so the
+     video covers only the image region and the figcaption below it
+     stays visible while hovering. */
+  height: auto;
+  aspect-ratio: 40 / 21;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  pointer-events: none;
+  z-index: 2;
+  background: var(--melix-bg-deep);
+}
+
+.post-hero-media:hover > video.hover-loaded {
+  opacity: 1;
+}
+
 /* Home cards: real DOM title bar with interactive buttons. */
 #post-list article.card-wrapper[data-filename] {
   resize: both;

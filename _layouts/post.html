@@ -52,8 +52,18 @@ script_includes:
           {%- capture lqip -%}lqip="{{ page.image.lqip }}"{%- endcapture -%}
         {% endif %}
 
-        <div class="mt-3 mb-3">
+        <div class="mt-3 mb-3 post-hero-media">
           <img {{ src }} {{ class }} {{ alt }} w="1200" h="630" {{ lqip }}>
+          {% if page.video %}
+            <video
+              data-src="{{ page.video | relative_url }}"
+              muted
+              loop
+              playsinline
+              preload="none"
+              aria-hidden="true"
+            ></video>
+          {% endif %}
           {%- if page.image.alt -%}
             <figcaption class="text-center pt-2 pb-2">{{ page.image.alt }}</figcaption>
           {%- endif -%}
@@ -206,6 +216,33 @@ script_includes:
           e.stopPropagation();
         });
       });
+
+    document.querySelectorAll('.post-hero-media').forEach(function (media) {
+      var video = media.querySelector('video[data-src]');
+      if (!video) return;
+      var loaded = false;
+      var ensureMuted = function () {
+        video.muted = true;
+        video.defaultMuted = true;
+      };
+      ensureMuted();
+      media.addEventListener('mouseenter', function () {
+        if (!loaded) {
+          video.src = video.getAttribute('data-src');
+          loaded = true;
+        }
+        ensureMuted();
+        var p = video.play();
+        if (p && p.catch) p.catch(function () {});
+        video.classList.add('hover-loaded');
+      });
+      media.addEventListener('mouseleave', function () {
+        ensureMuted();
+        video.pause();
+        video.classList.remove('hover-loaded');
+      });
+      video.addEventListener('volumechange', ensureMuted);
+    });
   })();
 </script>
 
