@@ -8,6 +8,7 @@ description: How signing up for a six-hour CTF the night before — to avoid a c
 image:
   path: /assets/img/posts/2023-11-10-hero.png
   alt: Botero-inspired illustration of three women working on laptops on a balcony in a futuristic Bogotá — La Candelaria brick rooftops, the Cerros Orientales rising behind them, a maglev TransMilenio gliding through the middle distance.
+video: /assets/video/2023-11-10-hover.mp4
 ---
 
 In September 2022 I signed up for a cybersecurity competition the night before it happened. I had a class I didn't want to attend that morning — a remote cybersecurity class, ironically — and I was honestly pretty down and looking for any excuse not to log in. The flyer for the *OAS Cyberwomen Challenge* showed up at the right time: a six-hour online CTF for women in cybersecurity, run by the OAS, Chile's CSIRT de Gobierno, the Interior Ministry, the Inter-American Committee against Terrorism (CICTE), and Trend Micro. A perfect alibi. I'd spent eight months working at Evernote in security and many years before that being the kind of internet kid who learned to defend by understanding how to attack. I'd done several AWS courses. I figured I could wing it.
