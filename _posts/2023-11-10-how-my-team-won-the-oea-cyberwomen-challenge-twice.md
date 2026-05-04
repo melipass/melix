@@ -43,11 +43,17 @@ Museo Botero was my favorite by far. We also did Museo del Oro, Museo de Bogotá
 
 The competition was held inside MinTIC itself — a big conference room divided into tables, one per team, with thirty-three women representing twelve countries: Argentina, Chile (two teams, since we'd had two editions), Colombia, Costa Rica, Ecuador, El Salvador, Guatemala, Mexico, Panama, Paraguay, Dominican Republic, and Uruguay. Some teams had brought their country's flag. Opening remarks came from Trend Micro, the OAS, and Sindey Carolina Bernal, Colombia's Vice Minister of Digital Transformation, who has purple-blue hair and made me think — out loud, in my head — *you can be an authority in tech and look like that.*
 
+![Group photo of the OEA Cyberwomen Challenge 2023 finalists at the Colombian Ministry of Information and Communication Technologies, gathered under the MinTIC sign with a large mural filling the wall above them.](/assets/img/posts/2023-11-10-mintic.jpg)
+
 The other teams were taking this seriously. Most of them had several years of professional cybersecurity experience; ours had at most one year each, and one of us was just starting her career after transitioning from Nutrition. We were the underdogs on paper. Argentina's team was at our heels for the entire competition — every time I peeked at the standings, they were closing the gap.
+
+![Mid-competition shot at MinTIC: the team gathered around a table with laptops open to terminals, a Trend Micro banner and event poster visible behind.](/assets/img/posts/2023-11-10-compitiendo.jpg)
 
 The challenges this time were aligned more closely with Trend Micro's XDR philosophy: detection and response, layered visibility, log volume management, the kind of work a security operations team does on a real incident. Roughly thirty challenges across the day. We forgot to check the leaderboard until — once again — they were about to hide it from us late in the afternoon, but we managed to peek just before they did. We knew we'd won. We were nervous anyway.
 
 When they called the results, they did it in reverse order: third place to Argentina, second tied between Mexico and a Chile-Paraguay collaboration, and first to us. We stood up for the photograph alongside Mariana Cardona of the OAS, who'd organized the program. The room felt warm in the right way.
+
+![On the podium at the OEA Cyberwomen Challenge Final Regional 2023: the three winners from team Chile holding their first-place certificates, with Mariana Cardona of the OAS on the left and a representative from Trend Micro on the right; the screen behind shows "1er Lugar — Equipo: Chile".](/assets/img/posts/2023-11-10-ganadoras.jpg)
 
 ## A note on who gets to be in the room
 
