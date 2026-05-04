@@ -1,23 +1,27 @@
 #!/usr/bin/env bash
-# .githooks/pre-commit
+# .husky/pre-commit
 #
-# Strip identity-revealing metadata (EXIF, IPTC, XMP, GPS, QuickTime atoms)
-# from any image or video staged under assets/img/ or assets/video/ before
-# the commit is recorded. The unstripped original is rewritten in place
-# in the working tree, then re-staged. The git object that lands in the
-# commit is the stripped one — the original blob is briefly in the object
-# store but is unreachable from any commit and gets garbage-collected,
-# so it never reaches `origin`.
+# Invoked by the global pre-commit hook (~/.config/git/hooks/pre-commit),
+# which runs gitleaks first and then delegates here. No per-clone
+# activation needed as long as the global core.hooksPath is set.
 #
-# Requires: exiftool  (brew install exiftool)
+# For every staged file under assets/img/ or assets/video/:
+#   - Videos: re-encode through bin/encode-video.sh (which downscales
+#     to 720p, strips audio, sets faststart, wipes input metadata, and
+#     tags the output so re-runs are idempotent).
+#   - Images: strip identity-revealing metadata (EXIF, IPTC, XMP, GPS)
+#     via exiftool, keeping the ICC color profile so colors stay right.
+# Modified files are re-added so the commit captures the cleaned version.
+# The pre-clean blobs briefly exist as unreachable git objects and get
+# garbage-collected, so they never reach `origin`.
 #
-# Activate this hook once per clone:
-#   git config core.hooksPath .githooks
+# Requires: exiftool, ffmpeg, ffprobe (see Brewfile — `brew bundle`).
 #
 # Compatible with bash 3.2 (the system bash on macOS).
 
 set -euo pipefail
 
+REPO_ROOT="$(git rev-parse --show-toplevel)"
 PROTECTED_REGEX='^(assets/img/|assets/video/)'
 
 # Read staged files (added/copied/modified/renamed) under protected paths.
@@ -33,15 +37,19 @@ if [ ${#staged[@]} -eq 0 ]; then
   exit 0
 fi
 
-if ! command -v exiftool >/dev/null 2>&1; then
-  cat >&2 <<'ERR'
-exiftool not found.
+missing_tools=()
+command -v exiftool >/dev/null 2>&1 || missing_tools+=("exiftool")
+command -v ffmpeg   >/dev/null 2>&1 || missing_tools+=("ffmpeg")
+command -v ffprobe  >/dev/null 2>&1 || missing_tools+=("ffprobe")
+
+if [ ${#missing_tools[@]} -gt 0 ]; then
+  cat >&2 <<ERR
+Missing tools: ${missing_tools[*]}
 
 This commit touches files under assets/img/ or assets/video/. The
-pre-commit hook strips identity-revealing metadata before they enter
-the repository, but it needs exiftool. Install it once with:
+pre-commit hook needs all of: exiftool, ffmpeg. Install them once with:
 
-    brew install exiftool
+    brew bundle
 
 Then retry the commit.
 ERR
@@ -51,18 +59,22 @@ fi
 # Case-insensitive extension matching (bash 3-friendly).
 shopt -s nocasematch
 
-stripped=0
+processed=0
 for f in "${staged[@]}"; do
   [ -f "$f" ] || continue
   case "$f" in
-    *.jpg|*.jpeg|*.png|*.webp|*.heic|*.tif|*.tiff|*.gif|\
-*.mp4|*.mov|*.m4v|*.webm|*.avi|*.mkv)
+    *.mp4|*.mov|*.m4v|*.webm|*.avi|*.mkv)
+      "$REPO_ROOT/bin/encode-video.sh" "$f"
+      git add "$f"
+      processed=$((processed + 1))
+      ;;
+    *.jpg|*.jpeg|*.png|*.webp|*.heic|*.tif|*.tiff|*.gif)
       printf 'stripping metadata: %s\n' "$f"
       # Wipe everything except the ICC color profile so screenshots and
       # photos keep accurate colors.
       exiftool -overwrite_original -all= --icc_profile:all= "$f" >/dev/null
       git add "$f"
-      stripped=$((stripped + 1))
+      processed=$((processed + 1))
       ;;
     *.svg)
       # SVGs are XML — metadata lives in <metadata>, <title>, and <desc>
@@ -73,7 +85,7 @@ done
 
 shopt -u nocasematch
 
-if [ "$stripped" -gt 0 ]; then
-  printf '%d file(s) stripped and re-staged.\n' "$stripped"
+if [ "$processed" -gt 0 ]; then
+  printf '%d file(s) processed and re-staged.\n' "$processed"
 fi
 exit 0

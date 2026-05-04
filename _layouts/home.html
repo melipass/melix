@@ -216,28 +216,6 @@ var video = card.querySelector('video[data-src]');
         video.addEventListener('volumechange', ensureMuted);
       }
     });
-
-function preloadCardVideos() {
-      document
-        .querySelectorAll('article.card-wrapper video[data-src]')
-        .forEach(function (video) {
-          if (video.src) return;
-          var src = video.getAttribute('data-src');
-          if (!src) return;
-          video.muted = true;
-          video.defaultMuted = true;
-          video.src = src;
-          video.load();
-        });
-    }
-    if (document.readyState === 'complete') {
-      
-      setTimeout(preloadCardVideos, 200);
-    } else {
-      window.addEventListener('load', function () {
-        setTimeout(preloadCardVideos, 200);
-      });
-    }
   })();
 </script>
 

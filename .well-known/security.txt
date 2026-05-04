@@ -1,0 +1,5 @@
+Contact: https://www.linkedin.com/in/melissa-silva-s/
+Contact: https://github.com/melipass/melix/security/advisories/new
+Expires: 2027-05-03T00:00:00Z
+Preferred-Languages: en, es, it
+Canonical: https://melix.cl/.well-known/security.txt
