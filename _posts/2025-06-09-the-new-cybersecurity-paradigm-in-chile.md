@@ -9,6 +9,7 @@ description: Notes from Patagonia Ciber on Chile's new Cybersecurity Framework L
 image:
   path: /assets/img/posts/2025-06-09-hero.png
   alt: Stylized illustration of a person walking toward a window with a moonlit sky, evoking a quiet town the morning after a storm.
+video: /assets/video/2025-06-09-hover.mp4
 ---
 
 > Originally published on [Fintualist](https://fintualist.com/chile/tecnologia/el-nuevo-paradigma-de-ciberseguridad-en-chile/) (in Spanish, June 2025). The hero illustration first appeared on that publication and is reproduced here with credit to Fintualist.
