@@ -1,5 +1,5 @@
 ---
-title: How my team won the OEA Cyberwomen Challenge — twice
+title: How my team won the OAS Cyberwomen Challenge — twice
 date: 2023-11-10 10:00:00 -0300
 categories: [Cybersecurity, Events]
 tags: [oas, cyberwoman-challenge, ctf, bogota, women-in-tech, latin-america]
@@ -10,7 +10,7 @@ image:
   alt: Botero-inspired illustration of three women working on laptops on a balcony in a futuristic Bogotá — La Candelaria brick rooftops, the Cerros Orientales rising behind them, a maglev TransMilenio gliding through the middle distance.
 ---
 
-In September 2022 I signed up for a cybersecurity competition the night before it happened. I had a class I didn't want to attend that morning — a remote cybersecurity class, ironically — and I was honestly pretty down and looking for any excuse not to log in. The flyer for the *OEA Cyberwomen Challenge* showed up at the right time: a six-hour online CTF for women in cybersecurity, run by the OAS, Chile's CSIRT de Gobierno, the Interior Ministry, the Inter-American Committee against Terrorism (CICTE), and Trend Micro. A perfect alibi. I'd spent eight months working at Evernote in security and many years before that being the kind of internet kid who learned to defend by understanding how to attack. I'd done several AWS courses. I figured I could wing it.
+In September 2022 I signed up for a cybersecurity competition the night before it happened. I had a class I didn't want to attend that morning — a remote cybersecurity class, ironically — and I was honestly pretty down and looking for any excuse not to log in. The flyer for the *OAS Cyberwomen Challenge* showed up at the right time: a six-hour online CTF for women in cybersecurity, run by the OAS, Chile's CSIRT de Gobierno, the Interior Ministry, the Inter-American Committee against Terrorism (CICTE), and Trend Micro. A perfect alibi. I'd spent eight months working at Evernote in security and many years before that being the kind of internet kid who learned to defend by understanding how to attack. I'd done several AWS courses. I figured I could wing it.
 
 The competition assigned us into teams of three at random and pointed us at a Discord server. I sat there for a few minutes before mustering the will to join the call — I was shy with strangers in 2022 — and met two women I would not have picked out of a profile-photo lineup but who turned out to be exactly the right people to be in a six-hour fight with. One of them brought infrastructure and compliance experience. Another brought OSINT and a background as a SOC analyst. I came in from the dev side, which mattered earlier than I expected: the first set of challenges had us pulling flags out of git logs and deploying things via gitops, and I'd just spent my Evernote internship doing intelligence work on git history that went back to 2008. So in the first challenge, honestly, I kind of carried us. By the second, the strengths balanced out and we settled into a rhythm.
 
@@ -50,7 +50,7 @@ When they called the results, they did it in reverse order: third place to Argen
 
 ## A note on who gets to be in the room
 
-I'm a trans woman, and one thing I want to put plainly in this post is that nothing about my participation in the OEA Cyberwomen Challenge — registration, team assignment, the trip, the photo on stage — was complicated by that. The system worked. I signed up; they put me on a team; the OAS sent me to Bogotá; we walked onto the stage as the winning team. It is, frankly, the version of how this should always go, and the reason I'm naming it here is that it's still uncommon enough to be worth naming.
+I'm a trans woman, and one thing I want to put plainly in this post is that nothing about my participation in the OAS Cyberwomen Challenge — registration, team assignment, the trip, the photo on stage — was complicated by that. The system worked. I signed up; they put me on a team; the OAS sent me to Bogotá; we walked onto the stage as the winning team. It is, frankly, the version of how this should always go, and the reason I'm naming it here is that it's still uncommon enough to be worth naming.
 
 The only moment my transness came up at the competition was offstage, between rounds, when one of my teammates asked for advice about an AFAB family member who she suspected was a trans man. I shared what I knew about access to trans health in Chile — the practical things — and pointed her toward resources to keep exploring. I never found out how that conversation continued, but the fact that it happened at all, mid-CTF, between two strangers who'd just been thrown together by a random algorithm, is its own small data point about why these spaces matter.
 

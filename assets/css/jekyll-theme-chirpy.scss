@@ -131,19 +131,27 @@ body {
   font-family: var(--melix-body);
 }
 
-h1, h2, h3, h4, h5, h6,
-.site-title,
-.card-title,
-.dynamic-title,
-#post-list h1,
-#post-list .card-title {
+/* Site brand stays in Archivo Black — chunky display, sidebar only. */
+.site-title {
   font-family: var(--melix-display) !important;
   font-weight: 400 !important;
   letter-spacing: -0.01em;
   line-height: 1.15;
 }
 
-h1 { letter-spacing: -0.025em; }
+/* Everything else heading-shaped uses Space Grotesk: post titles, post
+   body H2/H3, home card titles, tab page H1. Cleaner alongside the
+   monospace section/image/card title bars. */
+h1, h2, h3, h4, h5, h6,
+.card-title,
+.dynamic-title,
+#post-list h1,
+#post-list .card-title {
+  font-family: var(--melix-body) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0;
+  line-height: 1.2;
+}
 
 code,
 kbd,
@@ -342,6 +350,21 @@ article[data-filename] {
   background: var(--card-bg) !important;
   overflow: visible;
 }
+
+/* Tab pages (/about, /work, …) opt out of the outer shell so their inner
+   pieces — section-windows, image-windows, panels — read as floating
+   windows on the page background. Posts and home cards are unaffected. */
+article.tab-shell[data-filename] {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+#main-wrapper article.px-1.tab-shell > :not(.card-titlebar) {
+  padding-left: 0;
+  padding-right: 0;
+}
+
 
 /* Post-page article shell. The real-DOM `.card-titlebar` spans full width
    from border to border; everything else sits inside a comfortable
